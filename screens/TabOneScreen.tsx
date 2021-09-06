@@ -39,24 +39,21 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               {obj?.map((number: any, i: number) => {
                 const uniqueKey = index + 'num' + i + 'key' + number;
                 return (
-                  <>
+                  <View
+                    key={uniqueKey}
+                    style={styles.itemNumber}
+                  >
                     {number == 0 ?
                       <TextInput
                         key={uniqueKey}
-                        style={{ ...styles.itemNumber, color: themeColor }}
+                        style={{ color: themeColor }}
                         onChangeText={text => handleBoxPressed(index, i, number, text)}
                         keyboardType="number-pad"
                       />
                       :
-                      <View
-                        key={uniqueKey}
-                        style={styles.itemNumber}
-                      >
-                        <Text style={{ color: themeColor }}>{number}</Text>
-                        {/* {console.log(uniqueKey)} */}
-                      </View>
+                      <Text style={{ color: themeColor }}>{number}</Text>
                     }
-                  </>
+                  </View>
                 )
               })}
             </View>
