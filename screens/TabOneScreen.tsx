@@ -33,27 +33,29 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         {boardData?.map((obj: any, index: number) => {
           return (
             <View
-              key={index}
+              key={index + 'box'}
               style={styles.itemContainer}
             >
-              {obj.map((number: any, i: number) => {
-                const numberChecked = number == 0 ? '' : number.toString();
+              {obj?.map((number: any, i: number) => {
+                const uniqueKey = index + 'num' + i + 'key' + number;
                 return (
                   <>
                     {number == 0 ?
                       <TextInput
-                        key={index + i + 'num'}
+                        key={uniqueKey}
                         style={{ ...styles.itemNumber, color: themeColor }}
-                        defaultValue={numberChecked}
                         onChangeText={text => handleBoxPressed(index, i, number, text)}
                         keyboardType="number-pad"
                       />
                       :
-                      <View key={index + i + 'num'} style={styles.itemNumber}>
+                      <View
+                        key={uniqueKey}
+                        style={styles.itemNumber}
+                      >
                         <Text style={{ color: themeColor }}>{number}</Text>
+                        {/* {console.log(uniqueKey)} */}
                       </View>
                     }
-
                   </>
                 )
               })}
