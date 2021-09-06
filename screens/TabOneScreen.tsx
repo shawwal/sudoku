@@ -37,15 +37,24 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               style={styles.itemContainer}
             >
               {obj.map((number: any, i: number) => {
-                const numberChecked = number == 0 ? '' : number.toString(); 
+                const numberChecked = number == 0 ? '' : number.toString();
                 return (
-                  <TextInput
-                    key={index + i + 'num'}
-                    style={{...styles.itemNumber, color: themeColor}}
-                    defaultValue={numberChecked}
-                    onChangeText={text => handleBoxPressed(index, i, number, text)}
-                    keyboardType="number-pad"
-                  />
+                  <>
+                    {number == 0 ?
+                      <TextInput
+                        key={index + i + 'num'}
+                        style={{ ...styles.itemNumber, color: themeColor }}
+                        defaultValue={numberChecked}
+                        onChangeText={text => handleBoxPressed(index, i, number, text)}
+                        keyboardType="number-pad"
+                      />
+                      :
+                      <View key={index + i + 'num'} style={styles.itemNumber}>
+                        <Text style={{ color: themeColor }}>{number}</Text>
+                      </View>
+                    }
+
+                  </>
                 )
               })}
             </View>
@@ -60,7 +69,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: '7%'
   },
   boxContainer: {
     height: windowWidth,
