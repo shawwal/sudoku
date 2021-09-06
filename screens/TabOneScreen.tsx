@@ -46,7 +46,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
                     {number == 0 ?
                       <TextInput
                         key={uniqueKey}
-                        style={{ color: themeColor }}
+                        style={{...styles.inputSize, color: themeColor }}
                         onChangeText={text => handleBoxPressed(index, i, number, text)}
                         keyboardType="number-pad"
                       />
@@ -89,12 +89,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  inputSize: {
+    height: '100%',
+    width: '100%',
+    textAlign: 'center'
+  },
   itemNumber: {
+    height: '33%',
+    width: '33%',
     borderWidth: 1,
     borderColor: 'gray',
     textAlign: 'center',
-    height: '33%',
-    width: '33%',
     justifyContent: 'center',
     alignItems: 'center'
   }
