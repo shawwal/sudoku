@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Keyboard, TextInput } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
+import useColorScheme from '../hooks/useColorScheme';
 
 const windowWidth = Dimensions.get('window').width;
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
 
   const [boardData, setBoardData] = useState([]);
+  const theme = useColorScheme();
+  const themeColor = theme == 'dark' ? 'white' : 'black';
+
   const fetchGame = () => {
     fetch('https://sugoku.herokuapp.com/board?difficulty=easy')
       .then(response => response.json())
@@ -17,6 +21,11 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   useEffect(() => {
     fetchGame();
   }, []);
+
+  const handleBoxPressed = (index: number, i: number, boxNumber: any, insert: any) => {
+    console.log('ok', index, i, boxNumber, insert);
+    Keyboard.dismiss();
+  }
 
   return (
     <View style={styles.container}>
@@ -28,13 +37,15 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               style={styles.itemContainer}
             >
               {obj.map((number: any, i: number) => {
+                const numberChecked = number == 0 ? '' : number.toString(); 
                 return (
-                  <View
+                  <TextInput
                     key={index + i + 'num'}
-                    style={styles.itemNumber}
-                  >
-                    <Text>{number == 0 ? '' : number }</Text>
-                  </View>
+                    style={{...styles.itemNumber, color: themeColor}}
+                    defaultValue={numberChecked}
+                    onChangeText={text => handleBoxPressed(index, i, number, text)}
+                    keyboardType="number-pad"
+                  />
                 )
               })}
             </View>
@@ -71,7 +82,8 @@ const styles = StyleSheet.create({
   },
   itemNumber: {
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: 'gray',
+    textAlign: 'center',
     height: '33%',
     width: '33%',
     justifyContent: 'center',
