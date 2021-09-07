@@ -9,6 +9,7 @@ const windowWidth = Dimensions.get('window').width;
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
 
   const [boardData, setBoardData] = useState([] as any);
+  const [userInput, setUserInput] = useState([] as any);
   const theme = useColorScheme();
   const [gameStatus, setGameStatus] = useState('');
   const themeColor = theme == 'dark' ? 'white' : 'black';
@@ -17,7 +18,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const fetchGame = () => {
     fetch('https://sugoku.herokuapp.com/board?difficulty=easy')
       .then(response => response.json())
-      .then(data => setBoardData(data.board));
+      .then(data => {
+        setBoardData(data.board);
+        setUserInput(data.board);
+      });
   }
 
   useEffect(() => {
@@ -25,8 +29,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }, []);
 
   const handleBoxPressed = (parentIndex: number, childIndex: number, boxNumber: any) => {
-    console.log('ok', parentIndex, childIndex, boxNumber);
-    boardData[parentIndex][childIndex]
+    // console.log('ok', parentIndex, childIndex, boxNumber);
+    userInput[parentIndex][childIndex] = parseInt(boxNumber);
     Keyboard.dismiss();
   };
 
@@ -43,8 +47,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }
 
   const handleValidate = () => {
-    const checkData = { board: boardData };
-    console.log('checkData', checkData)
+    const checkData = { board: userInput };
+    // console.log('checkData', userInput)
     fetch('https://sugoku.herokuapp.com/validate', {
       method: 'POST',
       body: encodeParams(checkData),
@@ -52,10 +56,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     })
       .then(response => response.json())
       .then(response => {
-        console.log('response', response);
+        // console.log('response', response);
         setGameStatus(response.status)
       })
-      // .then(response => setGameStatus(response.status))
       .catch(console.warn)
   }
 
@@ -68,8 +71,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     })
       .then(response => response.json())
       .then(response => {
-        setBoardData(response.solution)
-        setGameStatus('solved');
+        // console.log('response', response);
+        setBoardData(response.solution);
+        setUserInput(response.solution);
+        setGameStatus(response.status);
       })
       .catch(console.warn)
   }
@@ -86,21 +91,29 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             >
               {obj?.map((number: any, i: number) => {
                 const uniqueKey = index + 'num' + i + 'key' + number;
+                const checkNumber = number == 0 ? '' : number.toString();
                 return (
                   <View
                     key={uniqueKey}
                     style={styles.itemNumber}
                   >
-                    {number == 0 ?
+                    {/* {number == 0 ?
                       <TextInput
-                        key={uniqueKey}
+                    
+                        defaultValue={number}
                         style={{ ...styles.inputSize, color: themeColor }}
                         onChangeText={text => handleBoxPressed(index, i, text)}
                         keyboardType="number-pad"
                       />
                       :
                       <Text style={{ color: themeColor }}>{number}</Text>
-                    }
+                    } */}
+                    <TextInput
+                      defaultValue={isNaN(number) ? '' : checkNumber}
+                      style={{ ...styles.inputSize, color: themeColor }}
+                      onChangeText={text => handleBoxPressed(index, i, text)}
+                      keyboardType="number-pad"
+                    />
                   </View>
                 )
               })}
